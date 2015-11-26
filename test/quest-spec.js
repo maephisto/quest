@@ -9,9 +9,20 @@ var chai = require('chai'),
     expect = chai.expect,
     quest = require('../quest');
 
-describe('Mega Quest library specification:', function () {
+describe('Quest library specification:', function () {
 
-    it('should test quest', function (done) {
+    it('should test quest initialization', function (done) {
+
+        done();
+    });
+
+    it('should test plugin injection', function (done) {
+
+        done();
+    });
+
+    it('should test final injection', function (done) {
+
         done();
     });
 

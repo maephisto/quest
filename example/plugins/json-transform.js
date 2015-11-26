@@ -5,10 +5,3 @@
 
 'use strict';
 
-var request = require('request');
-
-var quest = function (params) {
-
-};
-
-module.exports = quest;
