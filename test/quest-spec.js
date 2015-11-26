@@ -12,8 +12,10 @@ var chai = require('chai'),
 describe('Quest library specification:', function () {
 
     it('should test quest initialization', function (done) {
-
-        done();
+        quest({})
+            .then(function(result) {
+                done();
+            });
     });
 
     it('should test plugin injection', function (done) {

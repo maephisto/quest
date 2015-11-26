@@ -5,10 +5,13 @@
 
 'use strict';
 
-var request = require('request');
+var request = require('request'),
+    Q = require('q');
 
 var quest = function (params) {
-
+    var deferred = Q.defer();
+    deferred.resolve();
+    return deferred.promise;
 };
 
 module.exports = quest;

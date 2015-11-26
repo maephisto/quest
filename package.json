@@ -1,21 +1,18 @@
 {
   "name": "quest",
   "version": "0.0.1",
-
   "description": "Flexible request wrapper",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maephisto/quest.git"
   },
-
   "scripts": {
     "test": "mocha test/"
   },
-
   "dependencies": {
+    "q": "^1.4.1",
     "request": "2.67.0"
   },
-
   "devDependencies": {
     "chai": "^1.9.1",
     "mocha": "*"
