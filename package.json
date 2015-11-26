@@ -8,6 +8,10 @@
     "url": "git+https://github.com/maephisto/quest.git"
   },
 
+  "scripts": {
+    "test": "mocha test/"
+  },
+
   "dependencies": {
     "request": "2.67.0"
   },
