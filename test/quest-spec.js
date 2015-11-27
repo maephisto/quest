@@ -69,7 +69,14 @@ describe('Quest library specification:', function () {
             .then(function(result) {
                 console.log('final callback', result.body);
                 done();
-            });
+            })
+    });
 
+    it('should catch when there is an error in req', function (done) {
+        quest({url:'your mom'})
+            .catch(function(error) {
+                expect(error).to.be.not(null);
+                done();
+            });
     });
 });

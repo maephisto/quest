@@ -12,18 +12,45 @@ class Quest {
 
     constructor(options) {
         this.pluginFunctions = [];
+        try {
+            request(options, ((err, res, body) => {
 
-        request(options, ((err, res, body) => {
-            this.result = { err: err, res: res, body: body };
+                this.result = {err: err, res: res, body: body};
 
-            _.each(this.pluginFunctions, ((plugin) => {
-                this.result = plugin(this.result);
+                if (!this.result.err) {
+                    _.each(this.pluginFunctions, ((plugin) => {
+                        this.result = plugin(this.result);
+                    }));
+                } else {
+                    this.catchCallbackFunction(this.result.err);
+                }
+
+
             }));
-        }));
+
+        } catch (ex) {
+            this.catchCallbackFunction(ex);
+        } finally {
+            if (this.finalFunction && typeof this.finalFunction === 'function') {
+                this.finalFunction();
+            }
+        }
     }
 
     then (pluginFunction) {
         this.pluginFunctions.push(pluginFunction);
+
+        return this;
+    }
+
+    catch (catchCallbackFunction) {
+        this.catchCallbackFunction = catchCallbackFunction;
+
+        return this;
+    }
+
+    finally (finalFunction) {
+        this.finalFunction = finalFunction;
 
         return this;
     }
