@@ -5,24 +5,31 @@
 
 'use strict';
 
-var request = require('request');
+var request = require('request'),
+    _ = require('underscore');
 
-var quest = function (params) {
+class Quest {
 
-    function doStuff(err, res, body) {
-        return ({err: err, res: res, body: body});
+    constructor(options) {
+        this.pluginFunctions = [];
+
+        request(options, ((err, res, body) => {
+            this.result = {err: err, res: res, body: body};
+            console.log('>> r', this.result.body);
+            _.each(this.pluginFunctions, ((plugin) => {
+                console.log('>> plugging in', this.result.body);
+                this.result = plugin(this.result);
+            }));
+        }));
     }
 
-    return new Promise(function(resolve, reject) {
-        request(params, function(err, res, body) {
-            var result = doStuff(err, res, body);
-            if (err) {
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
-    });
-};
+    then (pluginFunction) {
+        this.pluginFunctions.push(pluginFunction);
 
-module.exports = quest;
+        return this;
+    }
+}
+
+module.exports = function (options) {
+    return new Quest(options);
+};

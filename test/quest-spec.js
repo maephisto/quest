@@ -13,6 +13,11 @@ var chai = require('chai'),
 const PORT = 8888;
 const MSG = 'Hello World!';
 
+var options = {
+    url: 'http://localhost:' + PORT
+};
+
+
 function handleRequest(req, response) {
     response.end(MSG);
 }
@@ -43,15 +48,27 @@ describe('Quest library specification:', function () {
         done();
     });
 
-    it('should make a request to url', function (done) {
-        quest({
-            url: 'http://localhost:' + PORT
-        }).then(function(result) {
+    xit('should make a request to url', function (done) {
+        quest(options).then(function(result) {
             expect(result.body).to.equal(MSG);
             done();
         });
     });
 
-    xit('should transform result with plugin', function (done) {
+    it('should transform result with plugin', function (done) {
+
+        quest(options)
+            .then(function(result) {
+                console.log('here')
+            })
+            .then(function(result) {
+                console.log(result);
+                result.body = result.body.toUpperCase();
+            })
+            .then(function(result) {
+                console.log(result);
+                done();
+            });
+
     });
 });
