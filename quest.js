@@ -5,13 +5,24 @@
 
 'use strict';
 
-var request = require('request'),
-    Q = require('q');
+var request = require('request');
 
 var quest = function (params) {
-    var deferred = Q.defer();
-    deferred.resolve();
-    return deferred.promise;
+
+    function doStuff(err, res, body) {
+        return ({err: err, res: res, body: body});
+    }
+
+    return new Promise(function(resolve, reject) {
+        request(params, function(err, res, body) {
+            var result = doStuff(err, res, body);
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
 };
 
 module.exports = quest;
