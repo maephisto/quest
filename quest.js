@@ -11,34 +11,18 @@ var request = require('request'),
 class Quest {
 
     constructor(options) {
+        this.options = options;
         this.pluginFunctions = [];
-        try {
-            request(options, ((err, res, body) => {
-
-                this.result = {err: err, res: res, body: body};
-
-                if (!this.result.err) {
-                    _.each(this.pluginFunctions, ((plugin) => {
-                        this.result = plugin(this.result);
-                    }));
-                } else {
-                    this.catchCallbackFunction(this.result.err);
-                }
-
-
-            }));
-
-        } catch (ex) {
-            this.catchCallbackFunction(ex);
-        } finally {
-            if (this.finalFunction && typeof this.finalFunction === 'function') {
-                this.finalFunction();
-            }
-        }
     }
 
-    then (pluginFunction) {
+    use (pluginFunction) {
         this.pluginFunctions.push(pluginFunction);
+
+        return this;
+    }
+
+    then (finalCallbackFunction) {
+        this.finalCallbackFunction = finalCallbackFunction;
 
         return this;
     }
@@ -53,6 +37,34 @@ class Quest {
         this.finalFunction = finalFunction;
 
         return this;
+    }
+
+    done () {
+        try {
+            request(this.options, ((err, res, body) => {
+
+                this.result = {res: res, body: body};
+
+                if (!err) {
+                    _.each(this.pluginFunctions, ((plugin) => {
+                        this.result = plugin(this.result);
+                    }));
+
+                    if (this.finalCallbackFunction && typeof this.finalCallbackFunction === 'function') {
+                        this.finalCallbackFunction();
+                    }
+                } else {
+                    this.catchCallbackFunction(err);
+                }
+            }));
+
+        } catch (ex) {
+            this.catchCallbackFunction(ex);
+        } finally {
+            if (this.finalFunction && typeof this.finalFunction === 'function') {
+                this.finalFunction();
+            }
+        }
     }
 }
 

@@ -14,9 +14,10 @@ const PORT = 8888;
 const MSG = 'Hello World!';
 
 var options = {
-    url: 'http://localhost:' + PORT
+    url: 'http://echo.jsontest.com/key/value/one/two'
 };
 
+var plugins = {};
 
 function handleRequest(req, response) {
     response.end(MSG);
@@ -27,6 +28,14 @@ var server = http.createServer(handleRequest);
 describe('Quest library specification:', function () {
 
     before(function() {
+        plugins.logSomething = function (result) {
+            //console.log('Logging plugin...', result);
+            return result;
+        };
+        plugins.upperCase = function(result) {
+            result.body = result.body.toUpperCase();
+            return result;
+        };
         server.listen(PORT);
     });
 
@@ -34,49 +43,67 @@ describe('Quest library specification:', function () {
         server.close();
     });
 
-    xit('should initialize', function (done) {
-        quest({});
+    it('should initialize', function (done) {
+        var v = quest({});
+        expect(v).not.to.be.null();
+        done();
     });
 
-    it('should inject a plugin', function (done) {
-
-        done();
+    xit('should inject a plugin', function (done) {
+        quest(options)
+            .use(plugins.logSomething)
+            .then(function(result) {
+                console.log('final callback here >>', result);
+            })
+            .catch(function(err) {
+                console.log('there was an error', err);
+            })
+            .finally(function(result) {
+                done();
+            })
+            .done();
     });
 
     it('should inject a final', function (done) {
-
-        done();
-    });
-
-    xit('should make a request to url', function (done) {
-        quest(options).then(function(result) {
-            expect(result.body).to.equal(MSG);
+        quest(options)
+        .then(function(result) {
+            expect(result).not.to.be.null();
             done();
-        });
+        })
+        .done();
+
+
     });
 
-    it('should transform result with plugin', function (done) {
+    it('should go to catch when having error', function (done) {
 
         quest(options)
+            .use(plugins.logSomething)
+            .use(plugins.upperCase)
             .then(function(result) {
-                console.log('here - plugin 1');
-                return result;
+                console.log('final callback here also', result.body);
             })
-            .then(function(result) {
-                result.body = result.body.toUpperCase();
-                return result;
+            .catch(function(err) {
+                console.log('error', err);
             })
-            .then(function(result) {
-                console.log('final callback', result.body);
+            .finally(function(result) {
+                console.log('finally ', result.body);
                 done();
             })
+            .done();
     });
 
     it('should catch when there is an error in req', function (done) {
+
         quest({url:'your mom'})
+            .use(function(result) {
+                result.body = result.body.toUpperCase();
+                return result;
+            })
             .catch(function(error) {
-                expect(error).to.be.not(null);
+                expect(error).not.to.be.null();
                 done();
-            });
+            })
+            .done();
     });
 });
