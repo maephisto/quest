@@ -14,10 +14,9 @@ class Quest {
         this.pluginFunctions = [];
 
         request(options, ((err, res, body) => {
-            this.result = {err: err, res: res, body: body};
-            console.log('>> r', this.result.body);
+            this.result = { err: err, res: res, body: body };
+
             _.each(this.pluginFunctions, ((plugin) => {
-                console.log('>> plugging in', this.result.body);
                 this.result = plugin(this.result);
             }));
         }));

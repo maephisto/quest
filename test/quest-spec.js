@@ -59,14 +59,15 @@ describe('Quest library specification:', function () {
 
         quest(options)
             .then(function(result) {
-                console.log('here')
+                console.log('here - plugin 1');
+                return result;
             })
             .then(function(result) {
-                console.log(result);
                 result.body = result.body.toUpperCase();
+                return result;
             })
             .then(function(result) {
-                console.log(result);
+                console.log('final callback', result.body);
                 done();
             });
 
