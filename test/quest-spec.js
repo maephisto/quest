@@ -49,7 +49,7 @@ describe('Quest library specification:', function () {
         done();
     });
 
-    xit('should inject a plugin', function (done) {
+    it('should inject a plugin', function (done) {
         quest(options)
             .use(plugins.logSomething)
             .then(function(result) {
@@ -81,13 +81,12 @@ describe('Quest library specification:', function () {
             .use(plugins.logSomething)
             .use(plugins.upperCase)
             .then(function(result) {
-                console.log('final callback here also', result.body);
+
             })
             .catch(function(err) {
                 console.log('error', err);
             })
-            .finally(function(result) {
-                console.log('finally ', result.body);
+            .finally(function() {
                 done();
             })
             .done();

@@ -12,11 +12,14 @@ class Quest {
 
     constructor(options) {
         this.options = options;
-        this.pluginFunctions = [];
     }
 
     use (pluginFunction) {
-        this.pluginFunctions.push(pluginFunction);
+        if (_.isArray(pluginFunction)) {
+            this.pluginFunctions.concat(pluginFunction);
+        } else {
+            this.pluginFunctions.push(pluginFunction);
+        }
 
         return this;
     }
