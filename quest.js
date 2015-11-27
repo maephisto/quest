@@ -8,10 +8,29 @@
 var request = require('request'),
     _ = require('underscore');
 
+function init(args) {
+    if (args) {
+        return new Quest(args);
+    } else {
+        return {
+            with: function(plugins) {
+                if (_.isArray(plugins)) {
+                    predefinedPlugins.concat(plugins);
+                } else {
+                    predefinedPlugins.push(plugins);
+                }
+            }
+        };
+    }
+}
+
+var predefinedPlugins = [];
+
 class Quest {
 
-    constructor(options) {
+    constructor(options, predefinedPlugins) {
         this.options = options;
+        this.pluginFunctions = predefinedPlugins || [];
     }
 
     use (pluginFunction) {
@@ -71,6 +90,4 @@ class Quest {
     }
 }
 
-module.exports = function (options) {
-    return new Quest(options);
-};
+module.exports = init;

@@ -36,6 +36,13 @@ describe('Quest library specification:', function () {
             result.body = result.body.toUpperCase();
             return result;
         };
+        plugins.matchToMessage = function (result) {
+            return result;
+        };
+        plugins.addTogether = function (result) {
+            result.body = 'hello';
+            return result;
+        };
         server.listen(PORT);
     });
 
@@ -43,20 +50,35 @@ describe('Quest library specification:', function () {
         server.close();
     });
 
-    it('should initialize', function (done) {
-        var v = quest({});
+    it('should initialize with no plugins', function (done) {
+        var v = quest();
         expect(v).not.to.be.null();
         done();
     });
 
+    it('should initialize with 1 plugin', function (done) {
+
+        var v = quest.with(plugins.addTogether);
+
+        v(options)
+            .then(function(result) {
+                expect(result.body).to.be(MSG);
+                done();
+            }).done();
+
+        done();
+    });
+
+    it('should initialize with an array of plugins', function (done) {
+        done();
+    });
+
     it('should inject a plugin', function (done) {
+
         quest(options)
-            .use(plugins.logSomething)
+            .use(plugins.matchToMessage)
             .then(function(result) {
                 console.log('final callback here >>', result);
-            })
-            .catch(function(err) {
-                console.log('there was an error', err);
             })
             .finally(function(result) {
                 done();
@@ -67,7 +89,7 @@ describe('Quest library specification:', function () {
     it('should inject a final', function (done) {
         quest(options)
         .then(function(result) {
-            expect(result).not.to.be.null();
+            expect(result).to.be(MSG);
             done();
         })
         .done();
